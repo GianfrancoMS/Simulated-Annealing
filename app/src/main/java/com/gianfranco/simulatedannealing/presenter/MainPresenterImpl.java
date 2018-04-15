@@ -34,7 +34,7 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onLoadPlaces() {
         if (view != null) {
-            view.focusMapOnPlace(peru);
+            view.focusMapOn(peru);
             view.drawPlaces(places);
             view.drawRoute(places);
         }

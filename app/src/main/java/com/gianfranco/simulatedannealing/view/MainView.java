@@ -7,7 +7,7 @@ import java.util.List;
 public interface MainView {
     void drawPlaces(List<Place> places);
 
-    void drawRoute(List<Place> places);
+    void focusMapOn(Place place);
 
-    void focusMapOnPlace(Place place);
+    void drawRoute(List<Place> places);
 }
