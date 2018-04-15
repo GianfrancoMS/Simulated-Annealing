@@ -2,19 +2,19 @@ package com.gianfranco.simulatedannealing.model;
 
 import java.util.Objects;
 
-public final class City {
+public final class Place {
 
     private final Point location;
     private final String name;
 
-    public City(Point location, String name) {
+    public Place(Point location, String name) {
         this.location = location;
         this.name = name;
     }
 
-    public City(City city) {
-        this.location = new Point(city.location);
-        this.name = city.name;
+    public Place(Place place) {
+        this.location = new Point(place.location);
+        this.name = place.name;
     }
 
     public double x() {
@@ -33,8 +33,8 @@ public final class City {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        City city = (City) o;
-        return Objects.equals(location, city.location);
+        Place place = (Place) o;
+        return Objects.equals(location, place.location);
     }
 
     @Override
@@ -44,7 +44,7 @@ public final class City {
 
     @Override
     public String toString() {
-        return "City{" +
+        return "place{" +
                 "location=" + location +
                 ", name='" + name + '\'' +
                 '}';

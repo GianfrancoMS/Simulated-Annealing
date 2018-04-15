@@ -5,32 +5,32 @@ import java.util.List;
 
 public final class Tour {
 
-    private final List<City> cities;
+    private final List<Place> places;
     private final DistanceCalculator calculator = DistanceCalculator.PYTHAGOREAN_CALCULATOR;
 
-    public Tour(List<City> cities) {
-        this.cities = checkValidCities(cities);
+    public Tour(List<Place> places) {
+        this.places = checkValidPlaces(places);
     }
 
     public Tour(Tour tour) {
-        this.cities = checkValidCities(tour.cities);
+        this.places = checkValidPlaces(tour.places);
     }
 
-    public List<City> cities() {
-        return deepCopy(cities);
+    public List<Place> places() {
+        return deepCopy(places);
     }
 
     public double distance() {
-        int numberOfCities = cities.size();
+        int numberOfPlaces = places.size();
 
         double distance = 0;
 
-        City first = cities.get(0);
-        City last = cities.get(numberOfCities - 1);
+        Place first = places.get(0);
+        Place last = places.get(numberOfPlaces - 1);
 
-        for (int i = 0; i < numberOfCities - 1; ++i) {
-            City current = cities.get(i);
-            City next = cities.get(i + 1);
+        for (int i = 0; i < numberOfPlaces - 1; ++i) {
+            Place current = places.get(i);
+            Place next = places.get(i + 1);
             distance += calculator.distanceBetween(current, next);
         }
 
@@ -39,32 +39,32 @@ public final class Tour {
         return distance;
     }
 
-    private List<City> deepCopy(List<City> cities) {
-        int size = cities.size();
-        List<City> copy = new ArrayList<>(size);
+    private List<Place> deepCopy(List<Place> places) {
+        int size = places.size();
+        List<Place> copy = new ArrayList<>(size);
         for (int i = 0; i < size; ++i) {
-            City city = new City(cities.get(i));
-            copy.add(city);
+            Place place = new Place(places.get(i));
+            copy.add(place);
         }
         return copy;
     }
 
-    private List<City> checkValidCities(List<City> cities) {
-        if (cities == null) {
-            throw new NullPointerException("cities = null");
-        } else if (cities.isEmpty()) {
-            throw new IllegalArgumentException("There are no cities for the tour");
-        } else if (cities.size() <= 2) {
-            throw new IllegalArgumentException("Tour needs at least 3 cities");
+    private List<Place> checkValidPlaces(List<Place> places) {
+        if (places == null) {
+            throw new NullPointerException("places = null");
+        } else if (places.isEmpty()) {
+            throw new IllegalArgumentException("There are no places for the tour");
+        } else if (places.size() <= 2) {
+            throw new IllegalArgumentException("Tour needs at least 3 places");
         } else {
-            return deepCopy(cities);
+            return deepCopy(places);
         }
     }
 
     @Override
     public String toString() {
         return "Tour{" +
-                "cities=" + cities +
+                "places=" + places +
                 '}';
     }
 }

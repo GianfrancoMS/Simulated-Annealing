@@ -18,57 +18,57 @@ public class TourTest {
     @Test
     public void When_NullListIsPassedToTourConstructor_Expect_NullPointerExceptionToBeThrown() {
         thrown.expect(NullPointerException.class);
-        thrown.expectMessage("cities = null");
-        List<City> cities = null;
-        Tour tour = new Tour(cities);
+        thrown.expectMessage("places = null");
+        List<Place> places = null;
+        Tour tour = new Tour(places);
     }
 
     @Test
     public void When_EmptyListIsPassedToTourConstructor_Expect_IllegalArgumentExceptionToBeThrown() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("There are no cities for the tour");
+        thrown.expectMessage("There are no places for the tour");
         Tour tour = new Tour(new ArrayList<>());
     }
 
     @Test
-    public void When_ListWithTwoCitiesIsPassedToTourConstructor_Expect_IllegalArgumentExceptionToBeThrown() {
+    public void When_ListWithTwoPlacesIsPassedToTourConstructor_Expect_IllegalArgumentExceptionToBeThrown() {
         thrown.expect(IllegalArgumentException.class);
-        thrown.expectMessage("Tour needs at least 3 cities");
+        thrown.expectMessage("Tour needs at least 3 places");
         Tour tour = new Tour(Arrays.asList(
-                new City(new Point(1, 1), "First"),
-                new City(new Point(2, 2), "Second")
+                new Place(new Point(1, 1), "First"),
+                new Place(new Point(2, 2), "Second")
         ));
     }
 
     @Test
-    public void When_GetCitiesIsCalled_Expect_DeepCopy() {
-        List<City> cities = Arrays.asList(
-                new City(new Point(1, 1), "First"),
-                new City(new Point(5, 1), "Second"),
-                new City(new Point(10, 1), "Third")
+    public void When_GetPlacesIsCalled_Expect_DeepCopy() {
+        List<Place> places = Arrays.asList(
+                new Place(new Point(1, 1), "First"),
+                new Place(new Point(5, 1), "Second"),
+                new Place(new Point(10, 1), "Third")
         );
 
-        Tour tour = new Tour(cities);
-        List<City> deepCopy = tour.cities();
+        Tour tour = new Tour(places);
+        List<Place> deepCopy = tour.places();
 
-        assertFalse(tour.cities() == cities);
-        assertFalse(tour.cities() == deepCopy);
-        assertFalse(deepCopy == cities);
+        assertFalse(tour.places() == places);
+        assertFalse(tour.places() == deepCopy);
+        assertFalse(deepCopy == places);
     }
 
     @Test
     public void When_NewTourIsCreatedFromAnotherOne_And_GetCitiesIsCalled_Expect_DeepCopy() {
-        List<City> cities = Arrays.asList(
-                new City(new Point(1, 1), "First"),
-                new City(new Point(5, 1), "Second"),
-                new City(new Point(10, 1), "Third")
+        List<Place> places = Arrays.asList(
+                new Place(new Point(1, 1), "First"),
+                new Place(new Point(5, 1), "Second"),
+                new Place(new Point(10, 1), "Third")
         );
 
-        Tour tour = new Tour(cities);
+        Tour tour = new Tour(places);
         Tour newTour = new Tour(tour);
 
-        assertFalse(tour.cities() == cities);
-        assertFalse(newTour.cities() == cities);
-        assertFalse(tour.cities() == newTour.cities());
+        assertFalse(tour.places() == places);
+        assertFalse(newTour.places() == places);
+        assertFalse(tour.places() == newTour.places());
     }
 }

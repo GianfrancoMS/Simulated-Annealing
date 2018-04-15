@@ -5,22 +5,20 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import io.reactivex.functions.Consumer;
-
 import static org.junit.Assert.*;
 
 public class SimulatedAnnealingTest {
 
     @Test
     public void simulate() {
-        final List<City> cities = Arrays.asList(
-                new City(new Point(5, 25), "Peru"),
-                new City(new Point(10, 5), "Chile"),
-                new City(new Point(15, 35), "Colombia"),
-                new City(new Point(20, 20), "Bolivia"),
-                new City(new Point(35, 40), "Venezuela"),
-                new City(new Point(40, 25), "Brasil"),
-                new City(new Point(30, 10), "Argentina")
+        final List<Place> places = Arrays.asList(
+                new Place(new Point(5, 25), "Peru"),
+                new Place(new Point(10, 5), "Chile"),
+                new Place(new Point(15, 35), "Colombia"),
+                new Place(new Point(20, 20), "Bolivia"),
+                new Place(new Point(35, 40), "Venezuela"),
+                new Place(new Point(40, 25), "Brasil"),
+                new Place(new Point(30, 10), "Argentina")
         );
 
         final double temperature = 1000;
@@ -28,7 +26,7 @@ public class SimulatedAnnealingTest {
         final double lowerBound = 0.95;
 
         SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(temperature, coolingSpeed, lowerBound);
-        Result result = simulatedAnnealing.startOptimization(cities)
+        Result result = simulatedAnnealing.startOptimization(places)
                 .blockingLast();
 
         assertTrue(temperature > result.temperature());

@@ -2,7 +2,7 @@ package com.gianfranco.simulatedannealing.model;
 
 public interface DistanceCalculator {
 
-    double distanceBetween(City begin, City end);
+    double distanceBetween(Place begin, Place end);
 
     DistanceCalculator PYTHAGOREAN_CALCULATOR = (begin, end) -> {
         double x = Math.abs(begin.x() - end.x());

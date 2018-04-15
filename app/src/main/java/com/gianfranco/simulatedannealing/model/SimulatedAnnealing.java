@@ -19,21 +19,21 @@ public final class SimulatedAnnealing {
         this.lowerBound = checkValidLowerBound(lowerBound);
     }
 
-    public Flowable<Result> startOptimization(final List<City> cities) {
+    public Flowable<Result> startOptimization(final List<Place> places) {
         return Flowable.create(emitter -> {
 
             double temperature = this.temperature;
 
-            Tour currentTour = new Tour(cities);
+            Tour currentTour = new Tour(places);
 
-            List<City> citiesCopy = currentTour.cities();
-            Collections.shuffle(citiesCopy);
-            currentTour = new Tour(citiesCopy);
+            List<Place> copyOfPlaces = currentTour.places();
+            Collections.shuffle(copyOfPlaces);
+            currentTour = new Tour(copyOfPlaces);
 
             Tour bestTour = new Tour(currentTour);
 
             Random rand = new Random();
-            int maxValue = currentTour.cities().size();
+            int maxValue = currentTour.places().size();
 
             int iterations = 0;
             int replacements = 0;
@@ -49,9 +49,9 @@ public final class SimulatedAnnealing {
                     j = rand.nextInt(maxValue);
                 } while (i == j);
 
-                List<City> newCities = currentTour.cities();
-                swapCitiesPositions(newCities, i, j);
-                Tour newTour = new Tour(newCities);
+                List<Place> newPlaces = currentTour.places();
+                swapCitiesPositions(newPlaces, i, j);
+                Tour newTour = new Tour(newPlaces);
 
                 double acceptanceProbability = acceptanceProbability(currentTour, newTour);
                 double random = rand.nextDouble();
@@ -69,7 +69,7 @@ public final class SimulatedAnnealing {
                 }
 
                 if (hasChanged && !emitter.isCancelled()) {
-                    emitter.onNext(new Result(bestTour.cities(), iterations, replacements, temperature, bestTour.distance()));
+                    emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
                 }
 
                 temperature *= (1 - coolingSpeed);
@@ -87,8 +87,8 @@ public final class SimulatedAnnealing {
         return Math.exp((current.distance() - next.distance()) / temperature);
     }
 
-    private void swapCitiesPositions(List<City> cities, int i, int j) {
-        Collections.swap(cities, i, j);
+    private void swapCitiesPositions(List<Place> places, int i, int j) {
+        Collections.swap(places, i, j);
     }
 
     private double checkValidTemperature(double temperature) {
