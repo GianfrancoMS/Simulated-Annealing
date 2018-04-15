@@ -5,6 +5,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import io.reactivex.functions.Consumer;
+
 import static org.junit.Assert.*;
 
 public class SimulatedAnnealingTest {
@@ -26,14 +28,9 @@ public class SimulatedAnnealingTest {
         final double lowerBound = 0.95;
 
         SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(temperature, coolingSpeed, lowerBound);
-        Tour bestTour = simulatedAnnealing.simulate(cities);
+        Result result = simulatedAnnealing.startOptimization(cities)
+                .blockingLast();
 
-        System.out.println(cities);
-
-        System.out.println(bestTour.cities());
-
-        System.out.println(bestTour.distance());
-
-        assertNotEquals(temperature, simulatedAnnealing.temperature(), 0.0001);
+        assertTrue(temperature > result.temperature());
     }
 }

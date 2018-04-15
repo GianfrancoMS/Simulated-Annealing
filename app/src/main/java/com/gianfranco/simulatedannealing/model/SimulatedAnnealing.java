@@ -4,9 +4,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+
 public final class SimulatedAnnealing {
 
-    private double temperature;
+    private final double temperature;
     private final double coolingSpeed;
     private final double lowerBound;
 
@@ -16,47 +19,65 @@ public final class SimulatedAnnealing {
         this.lowerBound = checkValidLowerBound(lowerBound);
     }
 
-    public Tour simulate(List<City> cities) {
-        Tour currentTour = new Tour(cities);
+    public Flowable<Result> startOptimization(final List<City> cities) {
+        return Flowable.create(emitter -> {
 
-        List<City> citiesCopy = currentTour.cities();
-        Collections.shuffle(citiesCopy);
-        currentTour = new Tour(citiesCopy);
+            double temperature = this.temperature;
 
-        Tour bestTour = new Tour(currentTour);
+            Tour currentTour = new Tour(cities);
 
-        Random rand = new Random();
-        int maxValue = currentTour.cities().size();
+            List<City> citiesCopy = currentTour.cities();
+            Collections.shuffle(citiesCopy);
+            currentTour = new Tour(citiesCopy);
 
-        while (temperature >= lowerBound) {
-            int i = rand.nextInt(maxValue);
-            int j;
-            do {
-                j = rand.nextInt(maxValue);
-            } while (i == j);
+            Tour bestTour = new Tour(currentTour);
 
-            List<City> newCities = currentTour.cities();
-            swapCitiesPositions(newCities, i, j);
-            Tour newTour = new Tour(newCities);
+            Random rand = new Random();
+            int maxValue = currentTour.cities().size();
 
-            double acceptanceProbability = acceptanceProbability(currentTour, newTour);
-            double random = rand.nextDouble();
-            if (acceptanceProbability > random) {
-                currentTour = new Tour(newTour);
+            int iterations = 0;
+            int replacements = 0;
+
+            boolean hasChanged = false;
+
+            while (temperature >= lowerBound) {
+                ++iterations;
+
+                int i = rand.nextInt(maxValue);
+                int j;
+                do {
+                    j = rand.nextInt(maxValue);
+                } while (i == j);
+
+                List<City> newCities = currentTour.cities();
+                swapCitiesPositions(newCities, i, j);
+                Tour newTour = new Tour(newCities);
+
+                double acceptanceProbability = acceptanceProbability(currentTour, newTour);
+                double random = rand.nextDouble();
+
+                if (acceptanceProbability > random) {
+                    currentTour = new Tour(newTour);
+                }
+
+                if (currentTour.distance() < bestTour.distance()) {
+                    bestTour = new Tour(currentTour);
+                    ++replacements;
+                    hasChanged = true;
+                } else {
+                    hasChanged = false;
+                }
+
+                if (hasChanged && !emitter.isCancelled()) {
+                    emitter.onNext(new Result(bestTour.cities(), iterations, replacements, temperature, bestTour.distance()));
+                }
+
+                temperature *= (1 - coolingSpeed);
             }
 
-            if (currentTour.distance() < bestTour.distance()) {
-                bestTour = new Tour(currentTour);
-            }
+            emitter.onComplete();
 
-            temperature *= (1 - coolingSpeed);
-        }
-
-        return new Tour(bestTour);
-    }
-
-    public double temperature() {
-        return temperature;
+        }, BackpressureStrategy.BUFFER);
     }
 
     private double acceptanceProbability(Tour current, Tour next) {
