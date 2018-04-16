@@ -33,8 +33,6 @@ public class MainPresenterImpl implements MainPresenter {
 
     private final Place peru = new Place(new Point(-9.5667057, -76.158411), "Peru");
 
-    private Tour tour;
-
     private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
@@ -56,6 +54,8 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void startOptimization() {
+        Tour tour;
+
         try {
             tour = new Tour(places, calculator);
         } catch (Exception e) {
