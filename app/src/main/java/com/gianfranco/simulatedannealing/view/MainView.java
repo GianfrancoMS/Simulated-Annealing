@@ -10,4 +10,6 @@ public interface MainView {
     void focusMapOn(Place place);
 
     void drawRoute(List<Place> places);
+
+    void clearRoute();
 }
