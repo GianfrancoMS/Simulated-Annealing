@@ -89,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .position(currentLatLng)
                     .rotation(rotation.floatValue())
                     .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward))
-                    .title(currentPlace.name()));
+                    .title(currentPlace.name())
+            );
         }
 
         Place lastPlace = places.get(size - 1);
@@ -104,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .position(lastLatLng)
                 .rotation(rotation.floatValue())
                 .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward))
-                .title(lastPlace.name()));
+                .title(lastPlace.name())
+        );
     }
 
     @Override
@@ -186,4 +188,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng from(Place place) {
         return new LatLng(place.x(), place.y());
     }
+
 }

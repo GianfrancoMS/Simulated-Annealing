@@ -13,7 +13,7 @@ public final class Tour {
         this.calculator = calculator;
     }
 
-    public Tour(Tour tour) {
+    Tour(Tour tour) {
         this.places = checkValidPlaces(tour.places);
         this.calculator = tour.calculator;
     }

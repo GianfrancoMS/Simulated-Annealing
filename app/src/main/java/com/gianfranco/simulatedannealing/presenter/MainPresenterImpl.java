@@ -29,11 +29,13 @@ public class MainPresenterImpl implements MainPresenter {
 
     private final DistanceCalculator calculator = new GoogleMapsCalculator();
 
-    private final CompositeDisposable disposable = new CompositeDisposable();
-
     private final List<Place> places = new ArrayList<>();
 
     private final Place peru = new Place(new Point(-9.5667057, -76.158411), "Peru");
+
+    private Tour tour;
+
+    private final CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     public void onAttach(MainView view) {
@@ -42,26 +44,25 @@ public class MainPresenterImpl implements MainPresenter {
 
     @Override
     public void onDetach() {
-        if (view != null) {
-            disposable.clear();
-            view = null;
-        }
+        disposable.clear();
+        view = null;
     }
 
     @Override
     public void onMapReady() {
-        if (view != null) {
-            view.focusMapOn(peru);
-        }
+        view.focusMapOn(peru);
+
     }
 
     @Override
     public void startOptimization() {
-        if (view != null) {
-            view.disableUserInput();
+        try {
+            tour = new Tour(places, calculator);
+        } catch (Exception e) {
+            view.showError(e.getMessage());
+            return;
         }
 
-        final Tour tour = new Tour(places, calculator);
         final Summary summary = new Summary();
 
         disposable.add(simulatedAnnealing.optimize(tour)
@@ -72,36 +73,33 @@ public class MainPresenterImpl implements MainPresenter {
                 })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscription -> view.disableUserInput())
                 .subscribeWith(new ResourceSubscriber<Result>() {
                     @Override
                     public void onNext(Result result) {
-                        if (view != null) {
-                            view.clearMap();
-                            view.drawPlaces(result.places());
-                            view.drawRoute(result.places());
-                        }
+                        view.clearMap();
+                        view.drawPlaces(result.places());
+                        view.drawRoute(result.places());
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        if (view != null) {
-                            view.showError(t.getMessage());
-                            view.enableUserInput();
-                        }
+                        view.showError(t.getMessage());
+                        view.enableUserInput();
                     }
 
                     @Override
                     public void onComplete() {
-                        if (view != null) {
-                            view.showSummary(summary);
-                            view.enableUserInput();
-                        }
+                        view.showSummary(summary);
+                        view.enableUserInput();
                     }
-                }));
+                })
+        );
     }
 
     @Override
     public void addNewPlace(Place place) {
         places.add(place);
     }
+
 }
