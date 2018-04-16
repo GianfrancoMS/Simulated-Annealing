@@ -9,7 +9,7 @@ public final class Result {
     private final double temperature;
     private final double distance;
 
-    public Result(List<Place> places, int iterations, int replacements, double temperature, double distance) {
+    Result(List<Place> places, int iterations, int replacements, double temperature, double distance) {
         this.places = places;
         this.iterations = iterations;
         this.replacements = replacements;
