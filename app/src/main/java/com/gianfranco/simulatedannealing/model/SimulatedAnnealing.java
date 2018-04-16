@@ -40,6 +40,10 @@ public final class SimulatedAnnealing {
             int iterations = 0;
             int replacements = 0;
 
+            if (!emitter.isCancelled()) {
+                emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
+            }
+
             boolean hasChanged = false;
 
             while (temperature >= lowerBound) {
@@ -75,6 +79,10 @@ public final class SimulatedAnnealing {
                 }
 
                 temperature *= (1 - coolingSpeed);
+            }
+
+            if (!emitter.isCancelled()) {
+                emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
             }
 
             emitter.onComplete();
