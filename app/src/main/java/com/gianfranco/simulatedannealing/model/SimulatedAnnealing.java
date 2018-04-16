@@ -44,7 +44,7 @@ public final class SimulatedAnnealing {
                 emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
             }
 
-            boolean hasChanged = false;
+            boolean hasChanged;
 
             while (temperature >= lowerBound) {
                 ++iterations;
