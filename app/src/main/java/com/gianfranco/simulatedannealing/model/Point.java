@@ -10,7 +10,7 @@ public final class Point {
         this.y = y;
     }
 
-    public Point(Point point) {
+    Point(Point point) {
         this.x = point.x;
         this.y = point.y;
     }
