@@ -1,26 +1,39 @@
 package com.gianfranco.simulatedannealing.presenter;
 
+import com.gianfranco.simulatedannealing.model.DistanceCalculator;
 import com.gianfranco.simulatedannealing.model.Place;
 import com.gianfranco.simulatedannealing.model.Point;
+import com.gianfranco.simulatedannealing.model.Result;
+import com.gianfranco.simulatedannealing.model.SimulatedAnnealing;
+import com.gianfranco.simulatedannealing.model.Tour;
 import com.gianfranco.simulatedannealing.view.MainView;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subscribers.ResourceSubscriber;
 
 public class MainPresenterImpl implements MainPresenter {
 
     private MainView view;
 
-    private final List<Place> places = Arrays.asList(
-            new Place(new Point(-16.3445345, -71.5679539), "Rodriguez Ballon"),
-            new Place(new Point(-13.713229, -73.352518), "Andahuaylas"),
-            new Place(new Point(-9.347222, -77.598333), "Comandante FAP Germán Arias Graciani"),
-            new Place(new Point(-13.1535905, -74.2064698), "Coronel FAP Alfredo Mendívil"),
-            new Place(new Point(-7.1373045, -78.490404), "Mayor Gral. FAP Armando Revoredo"),
-            new Place(new Point(-9.14927, -78.5250945), "Tnte. FAP Jaime De Montruil M.")
-    );
+    private final double TEMPERATURE = 1000;
+    private final double COOLING_SPEED = 0.0005;
+    private final double LOWER_BOUND = 0.75;
+    private final SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(TEMPERATURE, COOLING_SPEED, LOWER_BOUND);
 
-    private final Place peru = new Place(new Point(-9.2155836, -79.5154788), "Peru");
+    private final DistanceCalculator calculator = new GoogleMapsCalculator();
+
+    private final CompositeDisposable disposable = new CompositeDisposable();
+
+    private final List<Place> places = new ArrayList<>();
+
+    private final Place peru = new Place(new Point(-9.5667057, -76.158411), "Peru");
 
     @Override
     public void onAttach(MainView view) {
@@ -30,16 +43,65 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onDetach() {
         if (view != null) {
+            disposable.clear();
             view = null;
         }
     }
 
     @Override
-    public void onLoadPlaces() {
+    public void onMapReady() {
         if (view != null) {
             view.focusMapOn(peru);
-            view.drawPlaces(places);
-            view.drawRoute(places);
         }
+    }
+
+    @Override
+    public void startOptimization() {
+        if (view != null) {
+            view.disableUserInput();
+        }
+
+        final Tour tour = new Tour(places, calculator);
+        final Summary summary = new Summary();
+
+        disposable.add(simulatedAnnealing.optimize(tour)
+                .concatMap(i -> Flowable.just(i).delay(500, TimeUnit.MILLISECONDS))
+                .map(result -> {
+                    summary.setResult(result);
+                    return result;
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new ResourceSubscriber<Result>() {
+                    @Override
+                    public void onNext(Result result) {
+                        if (view != null) {
+                            view.clearMap();
+                            view.drawPlaces(result.places());
+                            view.drawRoute(result.places());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        if (view != null) {
+                            view.showError(t.getMessage());
+                            view.enableUserInput();
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if (view != null) {
+                            view.showSummary(summary);
+                            view.enableUserInput();
+                        }
+                    }
+                }));
+    }
+
+    @Override
+    public void addNewPlace(Place place) {
+        places.add(place);
     }
 }

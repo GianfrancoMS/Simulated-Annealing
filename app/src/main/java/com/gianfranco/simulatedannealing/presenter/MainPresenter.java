@@ -1,5 +1,6 @@
 package com.gianfranco.simulatedannealing.presenter;
 
+import com.gianfranco.simulatedannealing.model.Place;
 import com.gianfranco.simulatedannealing.view.MainView;
 
 public interface MainPresenter {
@@ -7,5 +8,9 @@ public interface MainPresenter {
 
     void onDetach();
 
-    void onLoadPlaces();
+    void onMapReady();
+
+    void startOptimization();
+
+    void addNewPlace(Place place);
 }

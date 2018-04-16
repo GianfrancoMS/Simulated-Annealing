@@ -1,13 +1,17 @@
 package com.gianfranco.simulatedannealing.view;
 
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.gianfranco.simulatedannealing.R;
 import com.gianfranco.simulatedannealing.model.Place;
+import com.gianfranco.simulatedannealing.model.Point;
 import com.gianfranco.simulatedannealing.presenter.MainPresenter;
 import com.gianfranco.simulatedannealing.presenter.MainPresenterImpl;
+import com.gianfranco.simulatedannealing.presenter.Summary;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap googleMap;
     private MainPresenter presenter;
     private Polyline route;
+    private Button startButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +43,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        startButton = findViewById(R.id.button_start);
+        startButton.setOnClickListener(v -> presenter.startOptimization());
     }
 
     @Override
@@ -50,7 +58,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        presenter.onLoadPlaces();
+        googleMap.setOnMapClickListener(latLng -> {
+            String title = latLng.latitude + " : " + latLng.longitude;
+
+            MarkerOptions markerOptions = new MarkerOptions();
+            markerOptions.position(latLng);
+            markerOptions.title(title);
+            googleMap.addMarker(markerOptions);
+
+            Place place = new Place(new Point(latLng.latitude, latLng.longitude), title);
+            presenter.addNewPlace(place);
+        });
+        presenter.onMapReady();
     }
 
     @Override
@@ -91,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void focusMapOn(Place place) {
         LatLng position = from(place);
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(position));
+        final float zoom = 5;
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
     }
 
     @Override
@@ -110,8 +130,57 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void clearRoute() {
-        route.remove();
+    public void clearMap() {
+        if (route != null) {
+            route.remove();
+            googleMap.clear();
+        }
+    }
+
+    @Override
+    public void enableUserInput() {
+        startButton.setEnabled(true);
+    }
+
+    @Override
+    public void disableUserInput() {
+        startButton.setEnabled(false);
+    }
+
+    @Override
+    public void showError(String message) {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("An error has occurred");
+        builder.setMessage(message);
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("OK", (dialog, id) -> {
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void showSummary(Summary summary) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Optimization completed");
+        builder.setMessage(
+                "Iterations: " + summary.iterations() + "\n" +
+                        "Replacements: " + summary.replacements() + "\n" +
+                        "Final temperature: " + summary.temperature() + "\n" +
+                        "Final distance: " + summary.distance() + " metros"
+        );
+        builder.setCancelable(false);
+
+        builder.setPositiveButton("OK", (dialog, id) -> {
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private LatLng from(Place place) {
