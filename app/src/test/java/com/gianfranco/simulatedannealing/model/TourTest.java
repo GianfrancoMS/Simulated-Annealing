@@ -15,19 +15,21 @@ public class TourTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
+    private final DistanceCalculator calculator = DistanceCalculator.PYTHAGOREAN_CALCULATOR;
+
     @Test
     public void When_NullListIsPassedToTourConstructor_Expect_NullPointerExceptionToBeThrown() {
         thrown.expect(NullPointerException.class);
         thrown.expectMessage("places = null");
         List<Place> places = null;
-        Tour tour = new Tour(places);
+        Tour tour = new Tour(places, calculator);
     }
 
     @Test
     public void When_EmptyListIsPassedToTourConstructor_Expect_IllegalArgumentExceptionToBeThrown() {
         thrown.expect(IllegalArgumentException.class);
         thrown.expectMessage("There are no places for the tour");
-        Tour tour = new Tour(new ArrayList<>());
+        Tour tour = new Tour(new ArrayList<>(), calculator);
     }
 
     @Test
@@ -37,7 +39,7 @@ public class TourTest {
         Tour tour = new Tour(Arrays.asList(
                 new Place(new Point(1, 1), "First"),
                 new Place(new Point(2, 2), "Second")
-        ));
+        ), calculator);
     }
 
     @Test
@@ -48,7 +50,7 @@ public class TourTest {
                 new Place(new Point(10, 1), "Third")
         );
 
-        Tour tour = new Tour(places);
+        Tour tour = new Tour(places, calculator);
         List<Place> deepCopy = tour.places();
 
         assertFalse(tour.places() == places);
@@ -64,7 +66,7 @@ public class TourTest {
                 new Place(new Point(10, 1), "Third")
         );
 
-        Tour tour = new Tour(places);
+        Tour tour = new Tour(places, calculator);
         Tour newTour = new Tour(tour);
 
         assertFalse(tour.places() == places);

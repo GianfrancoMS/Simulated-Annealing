@@ -19,21 +19,23 @@ public final class SimulatedAnnealing {
         this.lowerBound = checkValidLowerBound(lowerBound);
     }
 
-    public Flowable<Result> startOptimization(final List<Place> places) {
+    public Flowable<Result> optimize(final Tour tour) {
         return Flowable.create(emitter -> {
 
             double temperature = this.temperature;
 
-            Tour currentTour = new Tour(places);
+            Tour currentTour = new Tour(tour);
+
+            final DistanceCalculator calculator = currentTour.calculator();
 
             List<Place> copyOfPlaces = currentTour.places();
             Collections.shuffle(copyOfPlaces);
-            currentTour = new Tour(copyOfPlaces);
+            currentTour = new Tour(copyOfPlaces, calculator);
 
             Tour bestTour = new Tour(currentTour);
 
-            Random rand = new Random();
-            int maxValue = currentTour.places().size();
+            final Random rand = new Random();
+            final int maxValue = currentTour.places().size();
 
             int iterations = 0;
             int replacements = 0;
@@ -43,7 +45,7 @@ public final class SimulatedAnnealing {
             while (temperature >= lowerBound) {
                 ++iterations;
 
-                int i = rand.nextInt(maxValue);
+                final int i = rand.nextInt(maxValue);
                 int j;
                 do {
                     j = rand.nextInt(maxValue);
@@ -51,10 +53,10 @@ public final class SimulatedAnnealing {
 
                 List<Place> newPlaces = currentTour.places();
                 swapCitiesPositions(newPlaces, i, j);
-                Tour newTour = new Tour(newPlaces);
+                Tour newTour = new Tour(newPlaces, calculator);
 
-                double acceptanceProbability = acceptanceProbability(currentTour, newTour);
-                double random = rand.nextDouble();
+                final double acceptanceProbability = acceptanceProbability(currentTour, newTour);
+                final double random = rand.nextDouble();
 
                 if (acceptanceProbability > random) {
                     currentTour = new Tour(newTour);

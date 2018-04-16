@@ -5,15 +5,17 @@ import java.util.List;
 
 public final class Tour {
 
-    private final List<Place> places;
-    private final DistanceCalculator calculator = DistanceCalculator.PYTHAGOREAN_CALCULATOR;
+    private List<Place> places;
+    private final DistanceCalculator calculator;
 
-    public Tour(List<Place> places) {
+    public Tour(List<Place> places, DistanceCalculator calculator) {
         this.places = checkValidPlaces(places);
+        this.calculator = calculator;
     }
 
     public Tour(Tour tour) {
         this.places = checkValidPlaces(tour.places);
+        this.calculator = tour.calculator;
     }
 
     public List<Place> places() {
@@ -39,6 +41,10 @@ public final class Tour {
         return distance;
     }
 
+    DistanceCalculator calculator() {
+        return calculator;
+    }
+
     private List<Place> deepCopy(List<Place> places) {
         int size = places.size();
         List<Place> copy = new ArrayList<>(size);
@@ -59,12 +65,5 @@ public final class Tour {
         } else {
             return deepCopy(places);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Tour{" +
-                "places=" + places +
-                '}';
     }
 }

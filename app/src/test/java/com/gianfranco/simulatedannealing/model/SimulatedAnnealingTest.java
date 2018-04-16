@@ -25,8 +25,10 @@ public class SimulatedAnnealingTest {
         final double coolingSpeed = 0.003;
         final double lowerBound = 0.95;
 
+        final Tour tour = new Tour(places, DistanceCalculator.PYTHAGOREAN_CALCULATOR);
+
         SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(temperature, coolingSpeed, lowerBound);
-        Result result = simulatedAnnealing.startOptimization(places)
+        Result result = simulatedAnnealing.optimize(tour)
                 .blockingLast();
 
         assertTrue(temperature > result.temperature());
