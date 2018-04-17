@@ -24,7 +24,7 @@ public class MainPresenterImpl implements MainPresenter {
 
     private final double TEMPERATURE = 1000;
     private final double COOLING_SPEED = 0.0005;
-    private final double LOWER_BOUND = 0.75;
+    private final double LOWER_BOUND = 0.50;
     private final SimulatedAnnealing simulatedAnnealing = new SimulatedAnnealing(TEMPERATURE, COOLING_SPEED, LOWER_BOUND);
 
     private final DistanceCalculator calculator = new GoogleMapsCalculator();
@@ -66,7 +66,7 @@ public class MainPresenterImpl implements MainPresenter {
         final Summary summary = new Summary();
 
         disposable.add(simulatedAnnealing.optimize(tour)
-                .concatMap(i -> Flowable.just(i).delay(500, TimeUnit.MILLISECONDS))
+                .concatMap(i -> Flowable.just(i).delay(250, TimeUnit.MILLISECONDS))
                 .map(result -> {
                     summary.setResult(result);
                     return result;

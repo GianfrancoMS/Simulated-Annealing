@@ -12,7 +12,7 @@ public final class Summary {
         this.iterations = Integer.toString(result.iterations());
         this.replacements = Integer.toString(result.replacements());
         this.temperature = Double.toString(result.temperature());
-        this.distance = Double.toString(result.distance());
+        this.distance = Double.toString(result.distance() / 1000);
     }
 
     public String iterations() {
