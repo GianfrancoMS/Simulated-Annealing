@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             googleMap.addMarker(new MarkerOptions()
                     .position(currentLatLng)
                     .rotation(rotation.floatValue())
-                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward))
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward_white))
                     .title(currentPlace.name())
             );
         }
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMap.addMarker(new MarkerOptions()
                 .position(lastLatLng)
                 .rotation(rotation.floatValue())
-                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward))
+                .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_arrow_upward_black))
                 .title(lastPlace.name())
         );
     }
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 "Iterations: " + summary.iterations() + "\n" +
                         "Replacements: " + summary.replacements() + "\n" +
                         "Final temperature: " + summary.temperature() + "\n" +
-                        "Final distance: " + summary.distance() + " metros"
+                        "Final distance: " + summary.distance() + " km"
         );
         builder.setCancelable(false);
 
