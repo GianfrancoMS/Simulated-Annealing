@@ -66,7 +66,7 @@ public class MainPresenterImpl implements MainPresenter {
         final Summary summary = new Summary();
 
         disposable.add(simulatedAnnealing.optimize(tour)
-                .concatMap(i -> Flowable.just(i).delay(250, TimeUnit.MILLISECONDS))
+                .concatMap(result -> Flowable.just(result).delay(250, TimeUnit.MILLISECONDS))
                 .map(result -> {
                     summary.setResult(result);
                     return result;
