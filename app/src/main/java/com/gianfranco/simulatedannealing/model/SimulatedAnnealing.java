@@ -46,6 +46,8 @@ public final class SimulatedAnnealing {
 
             boolean hasChanged;
 
+            double bestDistance = 0;
+
             while (temperature >= lowerBound) {
                 ++iterations;
 
@@ -66,7 +68,8 @@ public final class SimulatedAnnealing {
                     currentTour = new Tour(newTour);
                 }
 
-                if (currentTour.distance() < bestTour.distance()) {
+                bestDistance = currentTour.distance();
+                if (bestDistance < bestTour.distance()) {
                     bestTour = new Tour(currentTour);
                     ++replacements;
                     hasChanged = true;
@@ -75,14 +78,14 @@ public final class SimulatedAnnealing {
                 }
 
                 if (hasChanged && !emitter.isCancelled()) {
-                    emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
+                    emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestDistance));
                 }
 
                 temperature *= (1 - coolingSpeed);
             }
 
             if (!emitter.isCancelled()) {
-                emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestTour.distance()));
+                emitter.onNext(new Result(bestTour.places(), iterations, replacements, temperature, bestDistance));
             }
 
             emitter.onComplete();
