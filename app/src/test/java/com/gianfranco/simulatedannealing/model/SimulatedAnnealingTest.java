@@ -8,7 +8,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class SimulatedAnnealingTest {
-
     @Test
     public void simulate() {
         final List<Place> places = Arrays.asList(

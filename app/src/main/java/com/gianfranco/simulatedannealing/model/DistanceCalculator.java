@@ -1,7 +1,6 @@
 package com.gianfranco.simulatedannealing.model;
 
 public interface DistanceCalculator {
-
     double distanceBetween(Place begin, Place end);
 
     DistanceCalculator PYTHAGOREAN_CALCULATOR = (begin, end) -> {

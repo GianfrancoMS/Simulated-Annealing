@@ -1,7 +1,6 @@
 package com.gianfranco.simulatedannealing.model;
 
 public final class Place {
-
     private final Point location;
     private final String name;
 

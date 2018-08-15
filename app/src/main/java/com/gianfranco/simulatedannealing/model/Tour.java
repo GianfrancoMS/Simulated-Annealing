@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Tour {
-
     private List<Place> places;
     private final DistanceCalculator calculator;
 

@@ -5,7 +5,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class DistanceCalculatorTest {
-
     private final DistanceCalculator calculator = DistanceCalculator.PYTHAGOREAN_CALCULATOR;
 
     @Test
@@ -25,5 +24,4 @@ public class DistanceCalculatorTest {
 
         assertEquals(distance, calculator.distanceBetween(first, last), 0.000001);
     }
-
 }

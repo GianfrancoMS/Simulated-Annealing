@@ -19,7 +19,6 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.ResourceSubscriber;
 
 public class MainPresenterImpl implements MainPresenter {
-
     private MainView view;
 
     private final double TEMPERATURE = 1000;
@@ -49,7 +48,6 @@ public class MainPresenterImpl implements MainPresenter {
     @Override
     public void onMapReady() {
         view.focusMapOn(peru);
-
     }
 
     @Override

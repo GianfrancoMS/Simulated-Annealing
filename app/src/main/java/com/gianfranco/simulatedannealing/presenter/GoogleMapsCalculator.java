@@ -6,7 +6,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.SphericalUtil;
 
 final class GoogleMapsCalculator implements DistanceCalculator {
-
     @Override
     public double distanceBetween(Place begin, Place end) {
         LatLng beginLatLng = new LatLng(begin.x(), begin.y());

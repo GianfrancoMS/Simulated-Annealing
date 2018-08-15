@@ -11,7 +11,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class TourTest {
-
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 

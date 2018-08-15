@@ -8,7 +8,6 @@ import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 
 public final class SimulatedAnnealing {
-
     private final double temperature;
     private final double coolingSpeed;
     private final double lowerBound;

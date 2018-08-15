@@ -26,7 +26,6 @@ import com.google.maps.android.SphericalUtil;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, MainView {
-
     private GoogleMap googleMap;
     private MainPresenter presenter;
     private Polyline route;
@@ -188,5 +187,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng from(Place place) {
         return new LatLng(place.x(), place.y());
     }
-
 }
